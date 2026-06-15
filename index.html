@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA DIAMONDS — Пополнение игровой валюты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* =========================================
+   ПЕРЕМЕННЫЕ И БАЗОВЫЕ СТИЛИ
+   ========================================= */
+:root {
+  --bg-void:        #0a0a0c;
+  --bg-deep:        #0d0d12;
+  --bg-surface:     #111118;
+  --bg-card:        rgba(255,255,255,0.03);
+  --neon-violet:    #a855f7;
+  --neon-violet-dim:#7c3aed;
+  --neon-blue:      #3b82f6;
+  --neon-cyan:      #06b6d4;
+  --neon-pink:      #ec4899;
+  --accent-gold:    #f59e0b;
+  --text-primary:   #f0f0ff;
+  --text-secondary: #8888aa;
+  --text-muted:     #44445a;
+  --border-glow:    rgba(168,85,247,0.25);
+  --border-subtle:  rgba(255,255,255,0.06);
+  --glass-blur:     blur(20px);
+  --radius-card:    16px;
+  --radius-btn:     10px;
+  --shadow-card:    0 8px 40px rgba(0,0,0,0.6);
+  --glow-violet:    0 0 20px rgba(168,85,247,0.4), 0 0 60px rgba(168,85,247,0.15);
+  --glow-blue:      0 0 20px rgba(59,130,246,0.4), 0 0 60px rgba(59,130,246,0.15);
+  --glow-cyan:      0 0 20px rgba(6,182,212,0.4), 0 0 60px rgba(6,182,212,0.15);
+  --glow-gold:      0 0 20px rgba(245,158,11,0.5), 0 0 60px rgba(245,158,11,0.2);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* =========================================
+   ФОН: ЗВЁЗДНОЕ ПОЛЕ + СЕТКА
+   ========================================= */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,28,220,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(6,182,212,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 0% 80%, rgba(168,85,247,0.08) 0%, transparent 50%);
+  z-index: 0; pointer-events: none;
+}
+
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(168,85,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168,85,247,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0; pointer-events: none;
+  animation: gridShift 20s linear infinite;
+}
+
+@keyframes gridShift {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(60px); }
+}
+
+.star-field {
+  position: fixed; inset: 0;
+  z-index: 0; pointer-events: none;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) var(--delay, 0s) infinite ease-in-out;
+  opacity: 0;
+}
+@keyframes twinkle {
+  0%,100% { opacity: 0; transform: scale(1); }
+  50% { opacity: var(--brightness, 0.7); transform: scale(1.5); }
+}
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+.page-wrapper {
+  position: relative; z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* =========================================
+   НАВБАР
+   ========================================= */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  padding: 16px 0;
+  background: rgba(10,10,12,0.85);
+  backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.navbar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--neon-violet), var(--neon-blue));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: var(--glow-violet);
+  animation: logoPulse 3s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%,100% { box-shadow: var(--glow-violet); }
+  50% { box-shadow: 0 0 30px rgba(168,85,247,0.7), 0 0 80px rgba(168,85,247,0.3); }
+}
+
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex; gap: 32px; list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: color .2s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--neon-violet);
+  transform: scaleX(0);
+  transition: transform .2s;
+}
+
+.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: rgba(168,85,247,0.1);
+  border: 1px solid var(--border-glow);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--neon-violet);
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 8px; height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* =========================================
+   ГЕРОЙ
+   ========================================= */
+.hero {
+  text-align: center;
+  padding: 100px 0 80px;
+  position: relative;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 20px;
+  border: 1px solid rgba(6,182,212,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--neon-cyan);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  background: rgba(6,182,212,0.05);
+  animation: fadeSlideUp .6s ease both;
+}
+
+.hero-eyebrow::before {
+  content: '◈';
+  font-size: 14px;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(42px, 7vw, 96px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 12px;
+  animation: fadeSlideUp .6s .1s ease both;
+}
+
+.hero-title .line1 {
+  display: block;
+  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-cyan), var(--neon-violet));
+  background-size: 200%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: gradShift 4s linear infinite;
+}
+
+@keyframes gradShift { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-secondary);
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 48px;
+  max-width: 560px;
+  margin-left: auto; margin-right: auto;
+  animation: fadeSlideUp .6s .2s ease both;
+  line-height: 1.6;
+}
+
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  animation: fadeSlideUp .6s .3s ease both;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.stat-sep {
+  width: 1px;
+  height: 48px;
+  background: var(--border-subtle);
+  align-self: center;
+}
+
+/* =========================================
+   SECTION HEADERS
+   ========================================= */
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.section-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--neon-violet);
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+
+.section-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(24px, 4vw, 40px);
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.section-title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.section-line {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-violet), transparent);
+  margin: 20px auto 0;
+}
+
+/* =========================================
+   ПАКЕТЫ ДОНАТА — СЕТКА
+   ========================================= */
+.packages-section {
+  padding: 80px 0;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* =========================================
+   КАРТОЧКА ПАКЕТА (Glassmorphism + параллакс)
+   ========================================= */
+.pkg-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  padding: 28px 24px 24px;
+  cursor: pointer;
+  transition: border-color .3s, transform .3s;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  animation: fadeSlideUp .5s ease both;
+}
+
+.pkg-card:nth-child(1) { animation-delay: .0s; }
+.pkg-card:nth-child(2) { animation-delay: .05s; }
+.pkg-card:nth-child(3) { animation-delay: .1s; }
+.pkg-card:nth-child(4) { animation-delay: .15s; }
+.pkg-card:nth-child(5) { animation-delay: .2s; }
+.pkg-card:nth-child(6) { animation-delay: .25s; }
+
+.pkg-card .card-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-color, rgba(168,85,247,0.25)) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
+  top: 50%; left: 50%;
+  z-index: 0;
+}
+
+.pkg-card:hover .card-glow { opacity: 1; }
+
+.pkg-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg,
+    rgba(255,255,255,0.06) 0%,
+    rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.03) 100%);
+  pointer-events: none; z-index: 1;
+}
+
+.pkg-card::after {
+  content: '';
+  position: absolute; top: 0; left: 20px; right: 20px; height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--accent-color, rgba(168,85,247,0.6)),
+    transparent);
+  z-index: 2;
+}
+
+.pkg-card:hover {
+  border-color: var(--accent-color, rgba(168,85,247,0.5));
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: var(--shadow-card),
+              0 0 0 1px var(--accent-color, rgba(168,85,247,0.3)),
+              0 20px 60px rgba(0,0,0,0.4),
+              var(--card-shadow, var(--glow-violet));
+}
+
+.pkg-card > * { position: relative; z-index: 3; }
+
+.pkg-card.featured {
+  border-color: rgba(168,85,247,0.4);
+  background: rgba(168,85,247,0.06);
+}
+
+.featured-badge {
+  position: absolute;
+  top: -1px; right: 24px;
+  padding: 4px 14px;
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-blue));
+  border-radius: 0 0 8px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  z-index: 10;
+}
+
+.pkg-tier {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.pkg-tier::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--accent-color, var(--neon-violet));
+}
+
+.pkg-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  display: block;
+  filter: drop-shadow(0 0 12px var(--accent-color, var(--neon-violet)));
+  animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.pkg-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.pkg-diamonds {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-bottom: 4px;
+}
+
+.pkg-diamonds .count {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent-color, var(--neon-violet)), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  line-height: 1;
+}
+
+.pkg-diamonds .unit {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.pkg-bonus {
+  font-size: 12px;
+  color: #22c55e;
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+
+.pkg-bonus::before { content: '+'; }
+
+.pkg-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin-bottom: 20px;
+}
+
+.pkg-price {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.price-value {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.price-per {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  line-height: 1.4;
+}
+
+.pkg-features {
+  list-style: none;
+  margin-bottom: 24px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.pkg-features li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex; align-items: center; gap: 8px;
+}
+
+.pkg-features li::before {
+  content: '◆';
+  font-size: 7px;
+  color: var(--accent-color, var(--neon-violet));
+  flex-shrink: 0;
+}
+
+.btn-select {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-btn);
+  border: 1px solid var(--accent-color, rgba(168,85,247,0.5));
+  background: rgba(168,85,247,0.1);
+  color: var(--text-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-select::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,
+    var(--accent-color, rgba(168,85,247,0.3)),
+    rgba(59,130,246,0.2));
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.btn-select:hover::before { opacity: 1; }
+
+.btn-select:hover {
+  border-color: var(--accent-color, var(--neon-violet));
+  box-shadow: 0 0 20px var(--accent-color, rgba(168,85,247,0.4));
+  transform: translateY(-1px);
+}
+
+.btn-select:active {
+  transform: scale(0.97) translateY(0);
+  animation: pulse-click .3s ease;
+}
+
+@keyframes pulse-click {
+  0% { box-shadow: 0 0 0 0 var(--accent-color, rgba(168,85,247,0.7)); }
+  70% { box-shadow: 0 0 0 12px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* =========================================
+   ФОРМА ЗАКАЗА
+   ========================================= */
+.order-section {
+  padding: 80px 0;
+}
+
+.order-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.order-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 24px;
+  padding: 48px;
+  backdrop-filter: var(--glass-blur);
+  position: relative;
+  overflow: hidden;
+}
+
+.order-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--neon-violet) 30%,
+    var(--neon-cyan) 70%,
+    transparent 100%);
+  animation: scanLine 3s ease-in-out infinite;
+}
+
+@keyframes scanLine {
+  0%,100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.selected-pkg-info {
+  display: flex; align-items: center; gap: 20px;
+  padding: 20px 24px;
+  background: rgba(168,85,247,0.06);
+  border: 1px solid rgba(168,85,247,0.2);
+  border-radius: 12px;
+  margin-bottom: 36px;
+}
+
+.selected-pkg-icon { font-size: 36px; }
+
+.selected-pkg-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.selected-pkg-detail {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.selected-pkg-price {
+  margin-left: auto;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--neon-violet);
+  white-space: nowrap;
+}
+
+/* ПОЛЯ ФОРМЫ */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.form-label .label-icon { font-size: 14px; }
+
+.form-input {
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  letter-spacing: 2px;
+  outline: none;
+  transition: all .25s;
+  caret-color: var(--neon-violet);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.form-input:focus {
+  border-color: rgba(168,85,247,0.6);
+  background: rgba(168,85,247,0.05);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.1),
+              0 0 20px rgba(168,85,247,0.15);
+}
+
+.form-input.valid {
+  border-color: rgba(34,197,94,0.5);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.08);
+}
+
+.form-input.invalid {
+  border-color: rgba(239,68,68,0.5);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
+  animation: shake .3s ease;
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.form-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  padding-left: 4px;
+}
+
+.form-hint.error { color: #ef4444; }
+.form-hint.success { color: #22c55e; }
+
+/* СПОСОБЫ ОПЛАТЫ */
+.payment-section {
+  margin-bottom: 28px;
+}
+
+.payment-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.payment-methods {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pay-card {
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all .25s;
+  background: rgba(255,255,255,0.02);
+  overflow: hidden;
+  user-select: none;
+}
+
+.pay-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 14px;
+  opacity: 0;
+  transition: opacity .25s;
+}
+
+.pay-card.dc-next::before {
+  background: linear-gradient(135deg, rgba(0,120,255,0.1), rgba(0,200,255,0.05));
+}
+.pay-card.alif::before {
+  background: linear-gradient(135deg, rgba(255,100,0,0.1), rgba(255,60,120,0.05));
+}
+
+.pay-card:hover { transform: translateY(-2px); }
+.pay-card:hover::before { opacity: 1; }
+
+.pay-card.selected {
+  border-color: var(--pay-accent, var(--neon-violet));
+  background: var(--pay-bg, rgba(168,85,247,0.06));
+  box-shadow: 0 0 0 1px var(--pay-accent, rgba(168,85,247,0.3)),
+              0 8px 30px rgba(0,0,0,0.3);
+}
+
+.pay-card.dc-next {
+  --pay-accent: rgba(0,140,255,0.7);
+  --pay-bg: rgba(0,140,255,0.06);
+}
+.pay-card.alif {
+  --pay-accent: rgba(255,90,30,0.7);
+  --pay-bg: rgba(255,90,30,0.06);
+}
+
+.pay-card input[type="radio"] {
+  position: absolute;
+  opacity: 0; pointer-events: none;
+}
+
+.pay-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+
+.pay-logo-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.dc-next .pay-logo-icon {
+  background: linear-gradient(135deg, #0066ff, #00c8ff);
+  box-shadow: 0 4px 15px rgba(0,140,255,0.4);
+}
+
+.alif .pay-logo-icon {
+  background: linear-gradient(135deg, #ff5a1e, #ff1f6e);
+  box-shadow: 0 4px 15px rgba(255,90,30,0.4);
+}
+
+.pay-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.pay-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-top: 3px;
+}
+
+.dc-next .pay-tag {
+  background: rgba(0,140,255,0.15);
+  color: #00a8ff;
+  border: 1px solid rgba(0,140,255,0.3);
+}
+.alif .pay-tag {
+  background: rgba(255,90,30,0.15);
+  color: #ff7040;
+  border: 1px solid rgba(255,90,30,0.3);
+}
+
+.pay-features {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.pay-features li {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex; align-items: center; gap: 6px;
+}
+
+.pay-features li::before {
+  content: '◆';
+  font-size: 6px;
+  color: var(--pay-accent, var(--neon-violet));
+}
+
+.pay-check {
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+  transition: all .2s;
+  background: transparent;
+}
+
+.pay-card.selected .pay-check {
+  background: var(--pay-accent, var(--neon-violet));
+  border-color: transparent;
+  content: '✓';
+  box-shadow: 0 0 10px var(--pay-accent, rgba(168,85,247,0.5));
+}
+
+/* Блок реквизитов после выбора оплаты */
+.requisites-block {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--req-color, rgba(168,85,247,0.3));
+  background: var(--req-bg, rgba(168,85,247,0.05));
+  display: none;
+  animation: fadeSlideUp .3s ease both;
+}
+
+.requisites-block.visible { display: block; }
+
+.req-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.req-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.req-row:last-child { border-bottom: none; }
+
+.req-key {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.req-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+.req-copy {
+  background: none; border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all .2s;
+}
+.req-copy:hover { color: var(--neon-cyan); background: rgba(6,182,212,0.1); }
+
+.req-notice {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 8px;
+  font-size: 12px;
+  color: #f59e0b;
+  line-height: 1.6;
+  display: flex; gap: 8px;
+}
+
+/* ЗАГРУЗКА ЧЕКА */
+.receipt-section {
+  margin-bottom: 28px;
+}
+
+.receipt-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.receipt-upload {
+  position: relative;
+  border: 2px dashed rgba(168,85,247,0.3);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s;
+  background: rgba(168,85,247,0.02);
+}
+
+.receipt-upload:hover {
+  border-color: rgba(168,85,247,0.6);
+  background: rgba(168,85,247,0.05);
+}
+
+.receipt-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  inset: 0;
+}
+
+.receipt-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.receipt-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.receipt-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.receipt-preview {
+  margin-top: 16px;
+  display: none;
+}
+
+.receipt-preview.visible {
+  display: block;
+}
+
+.receipt-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 1px solid rgba(168,85,247,0.3);
+  margin-bottom: 8px;
+}
+
+.receipt-preview-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+/* КНОПКА ОТПРАВИТЬ */
+.btn-order {
+  width: 100%;
+  padding: 18px;
+  border-radius: var(--radius-btn);
+  border: none;
+  background: linear-gradient(135deg, var(--neon-violet-dim), var(--neon-blue));
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.btn-order::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(255,255,255,0.15),
+    transparent);
+  transition: left .5s;
+}
+
+.btn-order:hover::before { left: 100%; }
+
+.btn-order:hover {
+  box-shadow: 0 0 30px rgba(168,85,247,0.6),
+              0 0 60px rgba(59,130,246,0.3);
+  transform: translateY(-2px);
+}
+
+.btn-order:active {
+  transform: scale(0.98) translateY(0);
+  animation: orderPulse .4s ease;
+}
+
+@keyframes orderPulse {
+  0% { box-shadow: 0 0 0 0 rgba(168,85,247,0.8); }
+  70% { box-shadow: 0 0 0 20px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.btn-order:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* SUCCESS STATE */
+.order-success {
+  text-align: center;
+  padding: 40px 20px;
+  display: none;
+}
+
+.success-icon {
+  font-size: 64px;
+  display: block;
+  margin-bottom: 20px;
+  animation: successPop .5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes successPop {
+  from { transform: scale(0) rotate(-10deg); opacity: 0; }
+  to { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+.success-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #22c55e;
+  margin-bottom: 12px;
+}
+
+.success-text { color: var(--text-secondary); line-height: 1.6; }
+
+.order-id {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #22c55e;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.footer {
+  padding: 48px 0 32px;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.footer-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  background: linear-gradient(90deg, var(--neon-violet), var(--neon-cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.footer-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.footer-copy {
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.5;
+  letter-spacing: 1px;
+}
+
+/* =========================================
+   УТИЛИТЫ
+   ========================================= */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   УВЕДОМЛЕНИЕ (TOAST)
+   ========================================= */
+.toast-container {
+  position: fixed;
+  top: 80px; right: 24px;
+  z-index: 999;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.toast {
+  padding: 14px 20px;
+  background: rgba(17,17,24,0.95);
+  border: 1px solid var(--border-glow);
+  border-radius: 10px;
+  backdrop-filter: blur(20px);
+  font-size: 14px;
+  color: var(--text-primary);
+  max-width: 320px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  animation: toastIn .3s ease both;
+  display: flex; align-items: center; gap: 10px;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.toast.success { border-color: rgba(34,197,94,0.4); }
+.toast.error { border-color: rgba(239,68,68,0.4); }
+
+/* =========================================
+   МЕДИА-ЗАПРОСЫ
+   ========================================= */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero { padding: 60px 0 50px; }
+  .hero-stats { gap: 24px; }
+  .stat-sep { display: none; }
+  .packages-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .order-card { padding: 28px 20px; }
+  .payment-methods { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .packages-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Звёздное поле -->
+<div class="star-field" id="starField"></div>
+
+<!-- Toast уведомления -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ============================================================
+     НАВБАР
+     ============================================================ -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">💎</div>
+      <span class="logo-text">Nova Diamonds</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#packages">Пакеты</a></li>
+      <li><a href="#order">Заказать</a></li>
+    </ul>
+    <div class="nav-badge">
+      <span class="status-dot"></span>
+      Онлайн
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     ГЕРОЙ
+     ============================================================ -->
+<div class="page-wrapper">
+  <section class="hero">
+    <div class="hero-eyebrow">Мгновенное пополнение</div>
+    <h1 class="hero-title">
+      <span class="line1">Пополни баланс</span>
+      <span class="line2">Diamonds</span>
+    </h1>
+    <p class="hero-sub">
+      Быстрая обработка вручную. Безопасно, надёжно,
+      без ожидания — твои алмазы уже через несколько минут.
+    </p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-value">3400+</span>
+        <span class="stat-label">Заказов выполнено</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-value">~5 мин</span>
+        <span class="stat-label">Время выполнения</span>
+      </div>
+      <div class="stat-sep"></div>
+      <div class="stat-item">
+        <span class="stat-value">24/7</span>
+        <span class="stat-label">Поддержка</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ПАКЕТЫ
+       ============================================================ -->
+  <section class="packages-section" id="packages">
+    <div class="section-header">
+      <span class="section-tag">Выбери пакет</span>
+      <h2 class="section-title">Пакеты <em>алмазов</em></h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="packages-grid">
+
+      <!-- Пакет 1: Стартовый -->
+      <div class="pkg-card"
+           style="--accent-color: rgba(6,182,212,0.6); --glow-color: rgba(6,182,212,0.2); --card-shadow: 0 0 30px rgba(6,182,212,0.15);"
+           data-pkg="starter" data-price="12" data-diamonds="100">
+        <div class="card-glow"></div>
+        <div class="pkg-tier">Стартовый</div>
+        <span class="pkg-icon">💎</span>
+        <div class="pkg-name">Spark</div>
+        <div class="pkg-diamonds">
+          <span class="count">100</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">12 сом.</span>
+          <span class="price-per">≈ 0.50 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Зачисление за 5–10 мин</li>
+          <li>Без комиссий</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(6,182,212,0.6);">
+          Выбрать
+        </button>
+      </div>
+
+      <!-- Пакет 2: Базовый -->
+      <div class="pkg-card"
+           style="--accent-color: rgba(59,130,246,0.6); --glow-color: rgba(59,130,246,0.2); --card-shadow: 0 0 30px rgba(59,130,246,0.15);"
+           data-pkg="basic" data-price="25" data-diamonds="310">
+        <div class="card-glow"></div>
+        <div class="pkg-tier">Базовый</div>
+        <span class="pkg-icon">💠</span>
+        <div class="pkg-name">Core</div>
+        <div class="pkg-diamonds">
+          <span class="count">310</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-bonus">5% бонус</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">25 сом.</span>
+          <span class="price-per">≈ 0.50 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Зачисление за 5–10 мин</li>
+          <li>Без комиссий</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(59,130,246,0.6);">
+          Выбрать
+        </button>
+      </div>
+
+      <!-- Пакет 3: Популярный (Featured) -->
+      <div class="pkg-card featured"
+           style="--accent-color: rgba(168,85,247,0.7); --glow-color: rgba(168,85,247,0.25); --card-shadow: var(--glow-violet);"
+           data-pkg="popular" data-price="50" data-diamonds="500">
+        <div class="card-glow"></div>
+        <div class="featured-badge">🔥 Хит</div>
+        <div class="pkg-tier">Популярный</div>
+        <span class="pkg-icon">🔮</span>
+        <div class="pkg-name">Pulse</div>
+        <div class="pkg-diamonds">
+          <span class="count">500</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-bonus">12% бонус</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">50 сом.</span>
+          <span class="price-per">≈ 0.50 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Приоритетная обработка</li>
+          <li>Без комиссий</li>
+          <li>Лучшая цена</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(168,85,247,0.7);">
+          Выбрать
+        </button>
+      </div>
+
+      <!-- Пакет 4: Продвинутый -->
+      <div class="pkg-card"
+           style="--accent-color: rgba(236,72,153,0.6); --glow-color: rgba(236,72,153,0.2); --card-shadow: 0 0 30px rgba(236,72,153,0.15);"
+           data-pkg="advanced" data-price="100" data-diamonds="1060">
+        <div class="card-glow"></div>
+        <div class="pkg-tier">Продвинутый</div>
+        <span class="pkg-icon">⚡</span>
+        <div class="pkg-name">Storm</div>
+        <div class="pkg-diamonds">
+          <span class="count">1060</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-bonus">18% бонус</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">100 сом.</span>
+          <span class="price-per">≈ 0.50 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Приоритетная обработка</li>
+          <li>VIP поддержка</li>
+          <li>Без комиссий</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(236,72,153,0.6);">
+          Выбрать
+        </button>
+      </div>
+
+      <!-- Пакет 5: Pro -->
+      <div class="pkg-card"
+           style="--accent-color: rgba(245,158,11,0.7); --glow-color: rgba(245,158,11,0.2); --card-shadow: var(--glow-gold);"
+           data-pkg="pro" data-price="200" data-diamonds="2180">
+        <div class="card-glow"></div>
+        <div class="pkg-tier">PRO</div>
+        <span class="pkg-icon">🌟</span>
+        <div class="pkg-name">Nova</div>
+        <div class="pkg-diamonds">
+          <span class="count">2180</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-bonus">26% бонус</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">200 сом.</span>
+          <span class="price-per">≈ 0.79 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Моментальная обработка</li>
+          <li>VIP поддержка 24/7</li>
+          <li>Персональный менеджер</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(245,158,11,0.7);">
+          Выбрать
+        </button>
+      </div>
+
+      <!-- Пакет 6: Elite -->
+      <div class="pkg-card"
+           style="--accent-color: rgba(239,68,68,0.6); --glow-color: rgba(239,68,68,0.2); --card-shadow: 0 0 30px rgba(239,68,68,0.2);"
+           data-pkg="elite" data-price="450" data-diamonds="5600">
+        <div class="card-glow"></div>
+        <div class="pkg-tier">ELITE</div>
+        <span class="pkg-icon">👑</span>
+        <div class="pkg-name">Apex</div>
+        <div class="pkg-diamonds">
+          <span class="count">5600</span>
+          <span class="unit">алмазов</span>
+        </div>
+        <div class="pkg-bonus">35% бонус</div>
+        <div class="pkg-divider"></div>
+        <div class="pkg-price">
+          <span class="price-value">450 сом.</span>
+          <span class="price-per">≈ 0.50 сом.<br>за алмаз</span>
+        </div>
+        <ul class="pkg-features">
+          <li>Моментальная обработка</li>
+          <li>Персональный менеджер</li>
+          <li>Приоритет 24/7</li>
+        </ul>
+        <button class="btn-select" style="--accent-color: rgba(239,68,68,0.6);">
+          Выбрать
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ФОРМА ЗАКАЗА
+       ============================================================ -->
+  <section class="order-section" id="order">
+    <div class="order-container">
+      <div class="order-card">
+
+        <div id="orderForm">
+          <!-- Выбранный пакет -->
+          <div class="selected-pkg-info" style="display: none;" id="selectedPkgInfo">
+            <div class="selected-pkg-icon" id="selectedIcon">💎</div>
+            <div>
+              <div class="selected-pkg-name" id="selectedName">Spark</div>
+              <div class="selected-pkg-detail" id="selectedDetail">100 алмазов</div>
+            </div>
+            <div class="selected-pkg-price" id="selectedPrice">12 сом.</div>
+          </div>
+
+          <!-- Поле: ID игрока -->
+          <div class="form-group">
+            <label class="form-label">
+              <span class="label-icon">👤</span>
+              ID игрока
+            </label>
+            <input type="text" class="form-input" id="playerId" placeholder="Введи свой ID в игре" required>
+            <div class="form-hint" id="playerIdHint"></div>
+          </div>
+
+          <!-- Способ оплаты -->
+          <div class="payment-section">
+            <label class="payment-label">💳 Способ оплаты</label>
+            <div class="payment-methods">
+              <label class="pay-card dc-next">
+                <input type="radio" name="paymentMethod" value="dc-next" required>
+                <div class="pay-logo">
+                  <div class="pay-logo-icon">🔵</div>
+                  <div>
+                    <div class="pay-name">DC Next</div>
+                    <div class="pay-tag">Быстро</div>
+                  </div>
+                </div>
+                <ul class="pay-features">
+                  <li>Мгновенный платёж</li>
+                  <li>Безопасно</li>
+                </ul>
+                <div class="pay-check">✓</div>
+              </label>
+
+              <label class="pay-card alif">
+                <input type="radio" name="paymentMethod" value="alif" required>
+                <div class="pay-logo">
+                  <div class="pay-logo-icon">🟠</div>
+                  <div>
+                    <div class="pay-name">Alif Mobi</div>
+                    <div class="pay-tag">Популярно</div>
+                  </div>
+                </div>
+                <ul class="pay-features">
+                  <li>Все операторы</li>
+                  <li>Удобно</li>
+                </ul>
+                <div class="pay-check">✓</div>
+              </label>
+            </div>
+
+            <!-- Реквизиты для оплаты -->
+            <div class="requisites-block" id="dcNextRequisites" style="--req-color: rgba(0,140,255,0.3); --req-bg: rgba(0,140,255,0.05);">
+              <div class="req-title">Реквизиты DC Next</div>
+              <div class="req-row">
+                <span class="req-key">Номер контакта:</span>
+                <span class="req-val">
+                  <span id="dcNextContact">+992 91 776 01 50</span>
+                  <button class="req-copy" onclick="copyToClipboard('dcNextContact')">📋</button>
+                </span>
+              </div>
+              <div class="req-row">
+                <span class="req-key">Сумма:</span>
+                <span class="req-val" id="dcNextAmount">12 сом.</span>
+              </div>
+              <div class="req-row">
+                <span class="req-key">Способ:</span>
+                <span class="req-val">DC Next</span>
+              </div>
+              <div class="req-notice">
+                ⚠️ Отправь платёж на указанный номер через DC Next. Загрузи скриншот чека ниже.
+              </div>
+            </div>
+
+            <div class="requisites-block" id="alifRequisites" style="--req-color: rgba(255,90,30,0.3); --req-bg: rgba(255,90,30,0.05);">
+              <div class="req-title">Реквизиты Alif Mobi</div>
+              <div class="req-row">
+                <span class="req-key">Номер контакта:</span>
+                <span class="req-val">
+                  <span id="alifContact">+992 91 776 01 50</span>
+                  <button class="req-copy" onclick="copyToClipboard('alifContact')">📋</button>
+                </span>
+              </div>
+              <div class="req-row">
+                <span class="req-key">Сумма:</span>
+                <span class="req-val" id="alifAmount">12 сом.</span>
+              </div>
+              <div class="req-row">
+                <span class="req-key">Способ:</span>
+                <span class="req-val">Alif Mobi</span>
+              </div>
+              <div class="req-notice">
+                ⚠️ Отправь платёж на указанный номер через Alif Mobi. Загрузи скриншот чека ниже.
+              </div>
+            </div>
+          </div>
+
+          <!-- Загрузка чека -->
+          <div class="receipt-section">
+            <label class="receipt-label">📸 Загрузи скриншот чека</label>
+            <div class="receipt-upload" onclick="document.getElementById('receiptFile').click()">
+              <input type="file" id="receiptFile" accept="image/*" required>
+              <div class="receipt-icon">📷</div>
+              <div class="receipt-text">Нажми или перетащи скриншот чека</div>
+              <div class="receipt-hint">PNG, JPG, максимум 5 МБ</div>
+            </div>
+            <div class="receipt-preview" id="receiptPreview">
+              <img id="receiptImage" src="" alt="Превью чека">
+              <div class="receipt-preview-name" id="receiptFileName"></div>
+            </div>
+          </div>
+
+          <!-- Кнопка отправить -->
+          <button class="btn-order" id="submitBtn" onclick="submitOrder()">
+            Отправить заказ
+          </button>
+        </div>
+
+        <!-- Success state -->
+        <div class="order-success" id="orderSuccess">
+          <div class="success-icon">✨</div>
+          <div class="success-title">Заказ отправлен!</div>
+          <div class="success-text">
+            Спасибо за твой заказ! Наша команда уже получила твой чек и начала обработку.<br>
+            Твои алмазы будут зачислены в течение 5–10 минут.
+          </div>
+          <div class="order-id" id="orderId">Заказ #12345</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="footer">
+    <div class="footer-logo">NOVA DIAMONDS</div>
+    <div class="footer-text">
+      Быстрое и безопасное пополнение игровой валюты.<br>
+      Работаем 24/7 для твоего удобства.
+    </div>
+    <div class="footer-copy">
+      © 2024 Nova Diamonds. Все права защищены.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// =========================================
+// КОНФИГУРАЦИЯ
+// =========================================
+const CONFIG = {
+  BACKEND_URL: 'http://localhost:5000', // Замени на URL твоего сервера
+  CONTACT_NUMBER: '+992 91 776 01 50',
+  DC_NEXT_CONTACT: '+992 91 776 01 50',
+  ALIF_CONTACT: '+992 91 776 01 50'
+};
+
+let selectedPackage = null;
+let selectedPaymentMethod = null;
+let selectedReceipt = null;
+
+// =========================================
+// ВЫБОР ПАКЕТА
+// =========================================
+document.querySelectorAll('.btn-select').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const card = this.closest('.pkg-card');
+    selectedPackage = {
+      name: card.querySelector('.pkg-name').textContent,
+      icon: card.querySelector('.pkg-icon').textContent,
+      diamonds: card.dataset.diamonds,
+      price: card.dataset.price,
+      pkg: card.dataset.pkg
+    };
+
+    // Показываем информацию о выбранном пакете
+    document.getElementById('selectedPkgInfo').style.display = 'flex';
+    document.getElementById('selectedIcon').textContent = selectedPackage.icon;
+    document.getElementById('selectedName').textContent = selectedPackage.name;
+    document.getElementById('selectedDetail').textContent = selectedPackage.diamonds + ' алмазов';
+    document.getElementById('selectedPrice').textContent = selectedPackage.price + ' сом.';
+
+    // Обновляем суммы в реквизитах
+    document.getElementById('dcNextAmount').textContent = selectedPackage.price + ' сом.';
+    document.getElementById('alifAmount').textContent = selectedPackage.price + ' сом.';
+
+    // Скролл к форме
+    document.getElementById('order').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// =========================================
+// ВЫБОР СПОСОБА ОПЛАТЫ
+// =========================================
+document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+  radio.addEventListener('change', function() {
+    selectedPaymentMethod = this.value;
+
+    // Обновляем визуально выбранный способ
+    document.querySelectorAll('.pay-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+    this.closest('.pay-card').classList.add('selected');
+
+    // Показываем/скрываем реквизиты
+    document.getElementById('dcNextRequisites').classList.toggle('visible', this.value === 'dc-next');
+    document.getElementById('alifRequisites').classList.toggle('visible', this.value === 'alif');
+  });
+});
+
+// =========================================
+// ЗАГРУЗКА ЧЕКА
+// =========================================
+document.getElementById('receiptFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    // Проверяем размер файла
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Файл слишком большой! Максимум 5 МБ', 'error');
+      return;
+    }
+
+    selectedReceipt = file;
+
+    // Показываем превью
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      document.getElementById('receiptImage').src = event.target.result;
+      document.getElementById('receiptFileName').textContent = file.name;
+      document.getElementById('receiptPreview').classList.add('visible');
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// =========================================
+// ОТПРАВКА ЗАКАЗА
+// =========================================
+async function submitOrder() {
+  // Валидация
+  const playerId = document.getElementById('playerId').value.trim();
+
+  if (!playerId) {
+    showToast('Введи ID игрока', 'error');
+    return;
+  }
+
+  if (!selectedPackage) {
+    showToast('Выбери пакет алмазов', 'error');
+    return;
+  }
+
+  if (!selectedPaymentMethod) {
+    showToast('Выбери способ оплаты', 'error');
+    return;
+  }
+
+  if (!selectedReceipt) {
+    showToast('Загрузи скриншот чека', 'error');
+    return;
+  }
+
+  // Отправляем заказ на бэкенд
+  const formData = new FormData();
+  formData.append('playerId', playerId);
+  formData.append('package', selectedPackage.pkg);
+  formData.append('diamonds', selectedPackage.diamonds);
+  formData.append('price', selectedPackage.price);
+  formData.append('paymentMethod', selectedPaymentMethod);
+  formData.append('receipt', selectedReceipt);
+
+  try {
+    document.getElementById('submitBtn').disabled = true;
+
+    const response = await fetch(CONFIG.BACKEND_URL + '/api/submit-order', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Показываем успешное сообщение
+      document.getElementById('orderForm').style.display = 'none';
+      document.getElementById('orderSuccess').style.display = 'block';
+      document.getElementById('orderId').textContent = 'Заказ #' + data.orderId;
+
+      showToast('Заказ успешно отправлен! ✨', 'success');
+    } else {
+      showToast('Ошибка при отправке заказа', 'error');
+      document.getElementById('submitBtn').disabled = false;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showToast('Ошибка соединения с сервером', 'error');
+    document.getElementById('submitBtn').disabled = false;
+  }
+}
+
+// =========================================
+// КОПИРОВАНИЕ В БУФЕР ОБМЕНА
+// =========================================
+function copyToClipboard(elementId) {
+  const element = document.getElementById(elementId);
+  const text = element.textContent;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Скопировано! 📋', 'success');
+  });
+}
+
+// =========================================
+// TOAST УВЕДОМЛЕНИЯ
+// =========================================
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.textContent = message;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+// =========================================
+// ЗВЁЗДНОЕ ПОЛЕ
+// =========================================
+function createStars() {
+  const starField = document.getElementById('starField');
+  const starCount = 100;
+
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.setProperty('--dur', Math.random() * 3 + 2 + 's');
+    star.style.setProperty('--delay', Math.random() * 3 + 's');
+    star.style.setProperty('--brightness', Math.random() * 0.5 + 0.5);
+    starField.appendChild(star);
+  }
+}
+
+createStars();
+</script>
+
+</body>
+</html>
